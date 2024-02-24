@@ -21,10 +21,12 @@ df_national_2013 = pd.read_stata(dtafile_national_2013)
 
 # Decode to traditional for a single string s.
 def decode_traditional(s):
-	return s.encode('latin-1').decode('big5-tw')
+	try:
+		return s.encode('latin-1', errors='ignore').decode('big5-tw')
+	except AttributeError:
+		return s
 
 # Apply the decoding to each string in columns with strings
 for col in df_national_2013.columns:
-	if df_national_2013[col].dtype == 'object':
-		df_national_2013[col] = df_national_2013.apply(decode_traditional)
-
+	if df_national_2013[col].dtype == ('category' or 'object'):
+		df_national_2013[col] = df_national_2013[col].apply(lambda x: decode_traditional(x))
