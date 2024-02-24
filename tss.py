@@ -17,6 +17,14 @@ df_national_2013 = pd.read_stata(dtafile_national_2013)
 
 
 # Testing converting the encoding for a single column
-df_national_2013['zip'] = df_national_2013['zip'].apply(lambda x: x.encode('latin-1').decode('big5-tw'))
+#df_national_2013['zip'] = df_national_2013['zip'].apply(lambda x: x.encode('latin-1').decode('big5-tw'))
 
+# Decode to traditional for a single string s.
+def decode_traditional(s):
+	return s.encode('latin-1').decode('big5-tw')
+
+# Apply the decoding to each string in columns with strings
+for col in df_national_2013.columns:
+	if df_national_2013[col].dtype == 'object':
+		df_national_2013[col] = df_national_2013.apply(decode_traditional)
 
